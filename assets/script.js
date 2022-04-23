@@ -1,4 +1,3 @@
-
 var searchFormEl = document.querySelector("#search-form");
 var queryEl = document.querySelector("#query-name");
 var searchBodyEl = document.querySelector("#searched-body");
@@ -9,24 +8,27 @@ var marvelImageEl = document.querySelector("#marvel-image-body");
 var youtubeBodyEl = document.querySelector("#youtube-body");
 var descriptionEl = document.querySelector("#description");
 var searchedBodyEl = document.querySelector("#searched-body");
-var modalErrorEl = document.getElementById('modal-error');
-var modalErrorCloseBtnEl = document.getElementById('modal-error-close-btn');
+var modalErrorEl = document.getElementById("modal-error");
+var modalErrorCloseBtnEl = document.getElementById("modal-error-close-btn");
 
-
-function initMaterializeModals(){
-  var elems = document.querySelectorAll('.modal');
+// modal initialised
+function initMaterializeModals() {
+  var elems = document.querySelectorAll(".modal");
   M.Modal.init(elems);
 }
-initMaterializeModals()
+initMaterializeModals();
 
 var modalErrorInstance = M.Modal.getInstance(modalErrorEl);
-modalErrorCloseBtnEl.addEventListener('click', (event) => modalErrorInstance.close() );
+
+modalErrorCloseBtnEl.addEventListener("click", (event) =>
+  modalErrorInstance.close()
+);
 
 //youTube API variables
-//Youtube API1
+// Youtube API1
+// backup api key
 // const youTubeApiKey = "AIzaSyAfUF4iIR3SGaR4Zp32vLIHhtUBJH2nPR0";
-
-//Youtube API2
+//  Youtube API2
 const youTubeApiKey = "AIzaSyAcJwcGGZME6Gs--ct2mRB_KSOJ1gQmI-g";
 
 const youTubeMaxResults = "1";
@@ -55,7 +57,14 @@ var formSubmitHandler = function (event) {
     //Enter Classes for this element
     marvelHeroEl.classList = "";
   } else {
-    marvelHeroEl.textContent = "Please enter a name or letter";
+    // modal - hero not found
+    modalErrorInstance.open();
+    // clear the dom from the previous content
+    document.getElementById("description").style.display = "none";
+    document.getElementById("marvel-hero-body").textContent = "";
+    document.getElementById("marvel-bio-body").textContent = "";
+    document.getElementById("marvel-image-body").textContent = "";
+    document.getElementById("youtube-body").textContent = "";
   }
 };
 
@@ -88,24 +97,14 @@ var getHeroRepos = function (hero) {
         displayHero(foundHero, heroID);
         storeSearch(foundHero);
       } else if (heroSearch === undefined) {
-        // popup says no hero
+        // modal - hero not found
         modalErrorInstance.open();
         // clear the dom from the previous content
-        // delete the '.description'
-        document.getElementById('description').style.display = "none";
-
-        document.getElementById('marvel-hero-body').textContent = "";
-        document.getElementById('marvel-bio-body').textContent = "";
-        document.getElementById('marvel-image-body').textContent = "";
-
-        
-        
-        // delete '#youtube-body'
-        document.getElementById('youtube-body').textContent = "";
-
-
-        marvelHeroEl.textContent = "Sorry no heroes found";
-        //modal TODO
+        document.getElementById("description").style.display = "none";
+        document.getElementById("marvel-hero-body").textContent = "";
+        document.getElementById("marvel-bio-body").textContent = "";
+        document.getElementById("marvel-image-body").textContent = "";
+        document.getElementById("youtube-body").textContent = "";
       }
     });
   });
@@ -135,8 +134,14 @@ document.addEventListener("DOMContentLoaded", function () {
 var displayHero = function (foundHero, heroID) {
   console.log("passed display hero function and ID is " + heroID);
   if (foundHero.length === 0) {
-    marvelHeroEl.textContent = "No hero found";
-    //modal TODO
+    //modal - hero not found
+    modalErrorInstance.open();
+    // clear the dom from the previous content
+    document.getElementById("description").style.display = "none";
+    document.getElementById("marvel-hero-body").textContent = "";
+    document.getElementById("marvel-bio-body").textContent = "";
+    document.getElementById("marvel-image-body").textContent = "";
+    document.getElementById("youtube-body").textContent = "";
     return;
   }
 
@@ -223,8 +228,14 @@ var getYouTubeVideo = function (foundHero) {
         displayHeroVideo(heroVideoId);
       } else {
         youtubeBodyEl.innerHTML = "";
-        youtubeBodyEl.textContent = "Sorry no hero video found";
-        //modal TODO
+        //modal - hero not found
+        modalErrorInstance.open();
+        // clear the dom from the previous content
+        document.getElementById("description").style.display = "none";
+        document.getElementById("marvel-hero-body").textContent = "";
+        document.getElementById("marvel-bio-body").textContent = "";
+        document.getElementById("marvel-image-body").textContent = "";
+        document.getElementById("youtube-body").textContent = "";
       }
     });
   });
@@ -233,11 +244,17 @@ var getYouTubeVideo = function (foundHero) {
 //display the hero video
 var displayHeroVideo = function (heroVideoId) {
   if (heroVideoId.length === 0) {
-    marvelHeroEl.textContent = "No video found";
-    //modal TODO
+    // modal - hero not found
+    modalErrorInstance.open();
+    // clear the dom from the previous content
+    document.getElementById("description").style.display = "none";
+    document.getElementById("marvel-hero-body").textContent = "";
+    document.getElementById("marvel-bio-body").textContent = "";
+    document.getElementById("marvel-image-body").textContent = "";
+    document.getElementById("youtube-body").textContent = "";
     return;
   }
-  //added this as the video kept appending children when a new search started
+  //stop video appending children when new search
   youtubeBodyEl.innerHTML = "";
   //create url for hero video
   var heroVideoUrl = "https://www.youtube.com/embed/" + heroVideoId;
@@ -257,14 +274,5 @@ var displayHeroVideo = function (heroVideoId) {
   videoContainerEl.appendChild(videoFrameEl);
   youtubeBodyEl.appendChild(videoContainerEl);
 };
-
-// Materialize modal
-// document.addEventListener("DOMContentLoaded", function () {
-//   var elems = document.querySelectorAll(".modal");
-//   var instances = M.Modal.init(elems, options);
-// });
-// var instance = M.Modal.getInstance(elem);
-// instance.open();
-// instance.close();
 
 searchFormEl.addEventListener("submit", formSubmitHandler);
