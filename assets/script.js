@@ -1,3 +1,4 @@
+
 var searchFormEl = document.querySelector("#search-form");
 var queryEl = document.querySelector("#query-name");
 var searchBodyEl = document.querySelector("#searched-body");
@@ -8,6 +9,18 @@ var marvelImageEl = document.querySelector("#marvel-image-body");
 var youtubeBodyEl = document.querySelector("#youtube-body");
 var descriptionEl = document.querySelector("#description");
 var searchedBodyEl = document.querySelector("#searched-body");
+var modalErrorEl = document.getElementById('modal-error');
+var modalErrorCloseBtnEl = document.getElementById('modal-error-close-btn');
+
+
+function initMaterializeModals(){
+  var elems = document.querySelectorAll('.modal');
+  M.Modal.init(elems);
+}
+initMaterializeModals()
+
+var modalErrorInstance = M.Modal.getInstance(modalErrorEl);
+modalErrorCloseBtnEl.addEventListener('click', (event) => modalErrorInstance.close() );
 
 //youTube API variables
 //Youtube API1
@@ -75,6 +88,22 @@ var getHeroRepos = function (hero) {
         displayHero(foundHero, heroID);
         storeSearch(foundHero);
       } else if (heroSearch === undefined) {
+        // popup says no hero
+        modalErrorInstance.open();
+        // clear the dom from the previous content
+        // delete the '.description'
+        document.getElementById('description').style.display = "none";
+
+        document.getElementById('marvel-hero-body').textContent = "";
+        document.getElementById('marvel-bio-body').textContent = "";
+        document.getElementById('marvel-image-body').textContent = "";
+
+        
+        
+        // delete '#youtube-body'
+        document.getElementById('youtube-body').textContent = "";
+
+
         marvelHeroEl.textContent = "Sorry no heroes found";
         //modal TODO
       }
@@ -229,7 +258,7 @@ var displayHeroVideo = function (heroVideoId) {
   youtubeBodyEl.appendChild(videoContainerEl);
 };
 
-// modal
+// Materialize modal
 // document.addEventListener("DOMContentLoaded", function () {
 //   var elems = document.querySelectorAll(".modal");
 //   var instances = M.Modal.init(elems, options);
